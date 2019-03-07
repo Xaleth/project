@@ -1,7 +1,7 @@
 
 /* Include libraries to use functions */
 #if defined(_WIN32) || defined(_WIN64)
-# include <conio.h>
+# include <conio.h> /* For it to work on Windows */
 #endif
 #include <stdlib.h>
 #include <stdio.h>
@@ -12,13 +12,16 @@
 #define NO 0
 #define REC_LENGTH 54
 
+/* Data structure where all stored info is.
+   Object is `rec` */
 struct record {
-  char fname[15+1];
-  char lname[20+1];
-  char mname[10+1];
-  char phone[9+1];
+  char fname[15+1]; /* First name + NULL */
+  char lname[20+1]; /* Last name + NULL */
+  char mname[10+1]; /* Middle name. Not + NULL because sometimes not used */
+  char phone[9+1];  /* Phone number + NULL */
 } rec;
 
+/*** Function Prototypes ***/
 int main(int argc, char *argv[]);
 void display_usage(char *filename);
 int display_menu(void);
@@ -28,16 +31,19 @@ int continue_function(void);
 int look_up(FILE *fp);
 int cont = YES;
 
+/*** START PROGRAM ***/
 int main(int argc, char *argv[])
 {
   FILE *fp;
 
+  /* Name of program */
   if (argc < 2)
   {
-    display_usage("WEEK3");
+    display_usage("Program");
     exit(1);
   }
 
+  /* Only if opened file was not something program expected */
   if ((fp = fopen(argv[1], "a+")) == NULL)
   {
     fprintf(stderr, "%s(%d)--Error opening file %s",
@@ -45,6 +51,7 @@ int main(int argc, char *argv[])
     exit(1);
   }
 
+  /* Process input */
   while (cont == YES)
   {
     switch(display_menu())
@@ -70,12 +77,12 @@ int main(int argc, char *argv[])
 #if defined(__linux__)
 char _getch()
 {
-  char c; // This function should return the keystroke
-  system("stty raw");    // Raw input - wait for only a single keystroke
-  system("stty -echo");  // Echo off
+  char c; /* This function should return the keystroke */
+  system("stty raw");    /* Raw input - wait for only a single keystroke */
+  system("stty -echo");  /* Echo off */
   c = getchar();
-  system("stty cooked"); // Cooked input - reset
-  system("stty echo");   // Echo on - Reset
+  system("stty cooked"); /* Cooked input - reset */
+  system("stty echo");   /* Echo on - Reset */
   return c;
 }
 #endif
@@ -98,7 +105,7 @@ void get_data(FILE *fp, char *progname, char *filename)
 {
   while (cont == YES)
   {
-    printf("\n\nPlease enter information:");
+    printf("\n\n--Please enter information--");
 
     printf("\n\nEnter first name: ");
     gets(rec.fname);
@@ -176,7 +183,7 @@ int continue_function(void)
 
 void display_usage(char *filename)
 {
-  printf("\n\nUSAGE: %s filename", filename);
+  printf("\n\nUSAGE: %s [filename]", filename);
   printf("\n\n       where filename is a file to store people\'s names");
   printf("\n       and phone numbers.\n\n");
 }
