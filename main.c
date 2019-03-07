@@ -1,5 +1,8 @@
 
 /* Include libraries to use functions */
+#if defined(_WIN32) || defined(_WIN64)
+# include <conio.h>
+#endif
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
@@ -52,10 +55,10 @@ int main(int argc, char *argv[])
                 break;
       case '3': look_up(fp);
                 break;
-      case '4': printf("\n\nThank you for using this program!");
+      case '4': printf("\n\nThank you for using this program!\n");
                 cont = NO;
                 break;
-      default: printf("\n\nInvalid choice. Please select 1 to 4!");
+      default: printf("\n\nInvalid choice. Please select 1 to 4!\n");
                break;
       }
   }
@@ -64,7 +67,8 @@ int main(int argc, char *argv[])
   return 0;
 }
 
-char getch()
+#if defined(__linux__)
+char _getch()
 {
   char c; // This function should return the keystroke
   system("stty raw");    // Raw input - wait for only a single keystroke
@@ -74,6 +78,7 @@ char getch()
   system("stty echo");   // Echo on - Reset
   return c;
 }
+#endif
 
 int display_menu(void)
 {
@@ -86,7 +91,7 @@ int display_menu(void)
   printf("\n4. Quit");
   printf("\n\nEnter Selection ==> ");
 
-  return(getch());
+  return(_getch());
 }
 
 void get_data(FILE *fp, char *progname, char *filename)
@@ -96,16 +101,16 @@ void get_data(FILE *fp, char *progname, char *filename)
     printf("\n\nPlease enter information:");
 
     printf("\n\nEnter first name: ");
-    _gets(rec.fname);
+    gets(rec.fname);
 
     printf("\n\nEnter middle name: ");
-    _gets(rec.mname);
+    gets(rec.mname);
 
     printf("\n\nEnter last name: ");
-    _gets(rec.lname);
+    gets(rec.lname);
 
     printf("\nEnter phone in 123-4567 format: ");
-    _gets(rec.phone);
+    gets(rec.phone);
 
     if (fseek(fp, 0, SEEK_END) ==0)
     {
@@ -157,11 +162,14 @@ int continue_function(void)
   do
   {
     printf("\n\nDo you wish to enter another? (Y)es/(N)o ");
-    ch = getch();
+    ch = _getch();
   } while (strchr("NnYy", ch) == NULL);
 
   if (ch == 'n' || ch == 'N')
+  {
+    printf("\n");
     return(NO);
+  }
   else
     return(YES);
 }
@@ -179,7 +187,7 @@ int look_up(FILE *fp)
   int ctr = 0;
 
   fprintf(stdout, "\n\nPlease enter last name to be found: ");
-  _gets(tmp_lname);
+  gets(tmp_lname);
 
   if (strlen(tmp_lname) != 0)
   {
